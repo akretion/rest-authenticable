@@ -1,9 +1,7 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import jwt
 import logging
-from odoo.http import request
 from odoo import models, _
 from odoo.exceptions import AccessDenied
 from ..common import get_jwt_token_from_header, translate_claims

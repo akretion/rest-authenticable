@@ -46,13 +46,23 @@ class TenantShopinvaderPartner(Component):
 
     @restapi.method(
         [(["/reset_password"], "POST")],
+        input_param=restapi.Datamodel("shopinvader.tenant.reset.pwd.input"),
         output_param=restapi.Datamodel("shopinvader.tenant.reset.pwd.output"),
-        auth="jwt",
+        auth="public",
     )
-    def reset_password(self):
-        backend, tenant = jwt_info()
-        result = {"result": self._reset_password(backend, tenant)}
+    def reset_password(self, payload):
+        result = {"result": self._reset_password(payload)}
         return self.env.datamodels["shopinvader.tenant.reset.pwd.output"].load(result)
+
+    @restapi.method(
+        [(["/reset_password_landing/<string:token>"], "GET")],
+        output_param=restapi.Datamodel("shopinvader.tenant.reset.pwd.landing.output"),
+        auth="public",
+    )
+    def reset_password_landing(self, token):
+        jwt_info(token)  # Verify token is correct
+        result = {"token": token}  # Send it back for API so that further action can be taken, i.e change pwd
+        return self.env.datamodels["shopinvader.tenant.reset.pwd.landing.output"].load(result)
 
     @restapi.method(
         [(["/change_password"], "POST")],

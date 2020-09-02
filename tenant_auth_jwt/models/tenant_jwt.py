@@ -1,7 +1,6 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.addons.tenant_base.models.tenant_base import TenantBase
 from odoo import models
 
 

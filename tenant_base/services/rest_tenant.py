@@ -31,5 +31,5 @@ class RestTenantBase(AbstractComponent):
     def _change_password(self, payload, backend, tenant):
         return backend.tb_change_password(payload, tenant)
 
-    def _reset_password(self, backend, tenant):
-        return backend.tb_reset_password(tenant)
+    def _reset_password(self, payload):
+        return self.env[payload.backend.backend_name].browse(payload.backend.backend_id).tb_reset_password(payload.tenant_identifier)

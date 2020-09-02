@@ -9,7 +9,7 @@ class TenantChangePwdInput(Datamodel):
 
     tenant_identifier = fields.Str(
         required=True
-    )  # TODO jarter tous les tenant_identifier et les déduire par le JWT "sub"
+    )  # TODO jarter tous les tenant_identifier
     password = fields.Str(required=True)
 
 

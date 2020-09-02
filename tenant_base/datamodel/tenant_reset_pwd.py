@@ -8,6 +8,7 @@ class TenantResetPwdInput(Datamodel):
     _name = "tenant.reset.pwd.input"
 
     tenant_identifier = fields.Str(required=True)
+    backend = fields.NestedModel("tenant.backend")
 
 
 class TenantSigninOutput(Datamodel):

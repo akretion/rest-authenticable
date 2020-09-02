@@ -1,12 +1,7 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-import hmac
-import json
-from hashlib import sha256
-import uuid
 import hashlib
-from base64 import urlsafe_b64encode
-from odoo import fields, models, _
+from odoo import models, _
 from odoo.exceptions import ValidationError
 
 

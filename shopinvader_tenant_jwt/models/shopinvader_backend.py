@@ -1,12 +1,7 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-import hmac
-import json
-import hashlib
 import datetime
-from base64 import urlsafe_b64encode
-from odoo import fields, models, _
-from odoo.exceptions import ValidationError
+from odoo import models
 
 
 class ShopinvaderBackend(models.Model):
@@ -14,22 +9,21 @@ class ShopinvaderBackend(models.Model):
     _inherit = ["shopinvader.backend", "tenant.backend.jwt"]
     _tenant_model = "shopinvader.partner"
 
-    def _jwt_send_temporary_token(self, tenant):
+    def _jwt_send_temporary_token(self, tenant):  # TODO whole workflow seems iffy
         token = self.jwt_generate(tenant, delta=30)
         url = (
-            self.env["ir.config.parameter"].get_param("web.base.url")
-            + "/shopinvader_partner/reset_password_landing/"
-            + token
+            self.env["ir.config_parameter"].get_param("web.base.url")
+            + "/shopinvader-partner/reset_password_landing/"
+            + token.decode("utf-8")
         )
         return self.env.ref(
             "shopinvader_tenant_jwt.mail_template_temp_token"
-        ).send_mail(tenant, email_values={"url": url})
+        ).send_mail(tenant.id, email_values={"url": url})
 
     def tb_reset_password(self, tenant):
-        result = super().tb_reset_password(tenant)
         self._send_notification("customer_reset_password", tenant)
         self._jwt_send_temporary_token(tenant)
-        return result
+        return True
 
     def tb_change_password(self, payload, tenant):
         result = tenant.t_change_password(payload.password)

@@ -4,6 +4,17 @@ from odoo.addons.datamodel import fields
 from odoo.addons.datamodel.core import Datamodel
 
 
-class ShopinvaderTenantSigninOutput(Datamodel):
+class ShopinvaderTenantResetPwdInput(Datamodel):
+    _inherit = "tenant.reset.pwd.input"
+    _name = "shopinvader.tenant.reset.pwd.input"
+
+
+class ShopinvaderTenantResetPwdOutput(Datamodel):
     _inherit = "tenant.reset.pwd.output"
     _name = "shopinvader.tenant.reset.pwd.output"
+
+
+class ShopinvaderTenantResetPwdLandingOutput(Datamodel):
+    _name = "shopinvader.tenant.reset.pwd.landing.output"
+
+    token = fields.Str(required=True)

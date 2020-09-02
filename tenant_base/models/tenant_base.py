@@ -1,7 +1,7 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import hashlib
-from odoo import models, _, fields
+from odoo import models
 
 
 class TenantBase(models.AbstractModel):

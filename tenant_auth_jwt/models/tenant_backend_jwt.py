@@ -1,7 +1,7 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import jwt
-from datetime import datetime
+import datetime
 from odoo import fields, models, _
 from odoo.exceptions import ValidationError
 
@@ -13,9 +13,9 @@ class TenantBackendJwt(models.AbstractModel):
 
     jwt_secret_key = fields.Char()
 
-    def _jwt_get_timestamp(self, delta=10080):  # TODO + xyz
+    def _jwt_get_timestamp(self, delta=10080):
         return (
-            datetime.utcnow() + datetime.datetime.timedelta(minutes=delta)
+            datetime.datetime.utcnow() + datetime.timedelta(minutes=delta)
         ).timestamp()
 
     def jwt_verify_validity(self, token):

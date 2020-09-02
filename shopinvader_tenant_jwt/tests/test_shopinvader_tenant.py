@@ -48,7 +48,7 @@ class ShopinvaderJwtTenantTest(ShopinvaderJwtTenantCase):
             )
         self.assertEqual(new_shopinvader_partner.external_id, "MyExternalId")
         self.assertAlmostEqual(
-            new_shopinvader_partner.sync_date.timestamp(), self.demo_time, places=1
+            new_shopinvader_partner.sync_date.timestamp(), self.demo_time, places=0
         )
         self.assertEqual(new_shopinvader_partner.backend_id.id, self.backend.id)
 
