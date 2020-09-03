@@ -5,6 +5,8 @@ import datetime
 from odoo import fields, models, _
 from odoo.exceptions import ValidationError
 
+DEFAULT_JWT_DURATION = 10080  # 7 days in minutes
+
 
 class TenantBackendJwt(models.AbstractModel):
     _name = "tenant.backend.jwt"
@@ -13,7 +15,7 @@ class TenantBackendJwt(models.AbstractModel):
 
     jwt_secret_key = fields.Char()
 
-    def _jwt_get_timestamp(self, delta=10080):
+    def _jwt_get_timestamp(self, delta=DEFAULT_JWT_DURATION):
         return (
             datetime.datetime.utcnow() + datetime.timedelta(minutes=delta)
         ).timestamp()
@@ -37,15 +39,3 @@ class TenantBackendJwt(models.AbstractModel):
 
     def tb_sign_in(self, payload):
         return self.jwt_generate(super().tb_sign_in(payload))
-
-    # def _find_tenant_jwt(self):
-    #     tenant = request.session.httprequest.environ["JWTTOKEN"]
-    #
-    # def tenant_sign_out(self):
-    #     self._find_tenant_jwt().sign_out()
-    #
-    # def tenant_reset_password(self):
-    #     self._find_tenant_jwt().reset_password()
-    #
-    # def tenant_change_password(self):
-    #     self._find_tenant_jwt().change_password(payload.password)

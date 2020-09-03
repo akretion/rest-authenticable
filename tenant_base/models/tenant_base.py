@@ -19,10 +19,10 @@ class TenantBase(models.AbstractModel):
         pwd_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
         pwd_field = self._tenant_pwd_hash
         setattr(self, pwd_field, pwd_hash)
-        return True
+        return "Success"
 
     def t_reset_password(self):
-        raise NotImplementedError
+        pass
 
     def t_sign_out(self):
-        raise NotImplementedError
+        pass

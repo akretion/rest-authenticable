@@ -9,6 +9,7 @@ class TenantJwt(models.AbstractModel):
     _name = "tenant.jwt"
 
     def t_sign_out(self):
+        result = super().t_sign_out()
         return (
             True  # this must be handled client-side, browser destroys the token cookie
         )

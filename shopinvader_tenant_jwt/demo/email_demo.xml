@@ -22,7 +22,7 @@
         <field name="body_html"><![CDATA[ You have requested a password change!
             You will receive an email to change it. ]]></field>
     </record>
-    <record id="mail_template_temp_token" model="mail.template">
+    <record id="mail_template_reset_pwd" model="mail.template">
         <field name="name">Temporary token link</field>
         <field name="email_from">${(object.email or '')|safe}</field>
         <field name="subject">Reset your password ${object.name}</field>
@@ -31,7 +31,7 @@
         <field name="auto_delete" eval="False"/>
         <field name="lang">${object.lang}</field>
         <field name="body_html"><![CDATA[ You have requested a password change!
-            Click on the following link to access it: ${url} ]]></field>
+            Click on the following link to access it: ${url}${token} ]]></field>
     </record>
 
 </odoo>

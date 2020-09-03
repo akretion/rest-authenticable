@@ -11,11 +11,6 @@ class ShopinvaderTenantSignupInput(Datamodel):
     _inherit = ["tenant.signup.input"]
     _name = "shopinvader.tenant.signup.input"
 
-    # @validates_schema  # TODO remettre
-    # def _validate_signup_input(self, data):
-    #     if data.login != data.address.email:
-    #         raise ValidationError(_("Login and email fields should be the same"))
-
     # Partner fields
     address = fields.NestedModel("tenant.address.base")
 

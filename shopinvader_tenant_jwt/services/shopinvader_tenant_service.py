@@ -10,7 +10,7 @@ class TenantShopinvaderPartner(Component):
     _name = "shopinvader.tenant.service"
     _usage = "auth"
     _collection = "shopinvader.backend"  # Note this is never used, because the info is contained in the token or route params
-    _apply_on = "shopinvader.partner"
+    _model_name = "shopinvader.partner"
     _description = """
     """
 
@@ -55,16 +55,6 @@ class TenantShopinvaderPartner(Component):
         return self.env.datamodels["shopinvader.tenant.reset.pwd.output"].load(result)
 
     @restapi.method(
-        [(["/reset_password_landing/<string:token>"], "GET")],
-        output_param=restapi.Datamodel("shopinvader.tenant.reset.pwd.landing.output"),
-        auth="public",
-    )
-    def reset_password_landing(self, token):
-        jwt_info(token)  # Verify token is correct
-        result = {"token": token}  # Send it back for API so that further action can be taken, i.e change pwd
-        return self.env.datamodels["shopinvader.tenant.reset.pwd.landing.output"].load(result)
-
-    @restapi.method(
         [(["/change_password"], "POST")],
         input_param=restapi.Datamodel("shopinvader.tenant.reset.pwd.input"),
         output_param=restapi.Datamodel("shopinvader.tenant.reset.pwd.output"),
@@ -74,3 +64,10 @@ class TenantShopinvaderPartner(Component):
         backend, tenant = jwt_info()
         result = {"result": self._change_password(payload, backend, tenant)}
         return self.env.datamodels["shopinvader.tenant.reset.pwd.output"].load(result)
+
+    def _get_openapi_default_parameters(self):
+        defaults = super()._get_openapi_default_parameters()
+        defaults.append(
+            {"name": "jwt", "bearerFormat": "JWT", "scheme": "bearer", "type": "http",}
+        )
+        return defaults

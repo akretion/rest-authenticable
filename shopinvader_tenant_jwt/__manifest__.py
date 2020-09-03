@@ -9,7 +9,13 @@
     "license": "AGPL-3",
     "author": "Akretion,Odoo Community Association (OCA)",
     "website": "https://www.akretion.com",
-    "depends": ["tenant_auth_jwt", "shopinvader"],
+    "depends": [
+        "tenant_auth_jwt",
+        "shopinvader",
+        "tenant_password_constraint",
+        "tenant_password_expiration",
+        "tenant_password_rotation",
+    ],
     "data": [],
     "demo": [
         "demo/backend_demo.xml",

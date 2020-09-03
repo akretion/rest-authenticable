@@ -7,13 +7,11 @@ from odoo.addons.datamodel.core import Datamodel
 class TenantChangePwdInput(Datamodel):
     _name = "tenant.change.pwd.input"
 
-    tenant_identifier = fields.Str(
-        required=True
-    )  # TODO jarter tous les tenant_identifier
+    tenant_identifier = fields.Str(required=True)
     password = fields.Str(required=True)
 
 
 class TenantChangePwdOutput(Datamodel):
     _name = "tenant.change.pwd.output"
 
-    result = fields.Boolean(required=True)
+    result = fields.Str(required=True)

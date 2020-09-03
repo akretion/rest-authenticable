@@ -15,6 +15,7 @@ class TenantBackendBase(models.AbstractModel):
         return self.env[self._tenant_model]
 
     def tb_sign_in(self, payload):
+        self = self.sudo()
         pwd_hash = hashlib.sha256(payload.password.encode("utf-8")).hexdigest()
         tenant = self.tenant_model.search(
             [
@@ -35,6 +36,7 @@ class TenantBackendBase(models.AbstractModel):
         }
 
     def tb_sign_up(self, payload):
+        self = self.sudo()
         login_field = self.tenant_model._tenant_login
         already_exists = self.tenant_model.search([(login_field, "=", payload.login)])
         if already_exists:
@@ -45,10 +47,13 @@ class TenantBackendBase(models.AbstractModel):
             return True
 
     def tb_sign_out(self, tenant):
+        self = self.sudo()
         return tenant.t_sign_out()
 
     def tb_reset_password(self, tenant):
+        self = self.sudo()
         return tenant.t_reset_password()
 
     def tb_change_password(self, payload, tenant):
+        self = self.sudo()
         return tenant.t_change_password(payload.password)
