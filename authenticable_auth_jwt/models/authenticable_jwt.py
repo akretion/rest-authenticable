@@ -8,8 +8,8 @@ class AuthenticableJwt(models.AbstractModel):
     _inherit = "authenticable.base"
     _name = "authenticable.jwt"
 
-    def t_sign_out(self):
-        result = super().t_sign_out()
+    def sign_out(self):
+        result = super().sign_out()
         return (
             True  # this must be handled client-side, browser destroys the token cookie
         )

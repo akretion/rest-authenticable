@@ -14,8 +14,7 @@ class AuthenticableBackendBase(models.AbstractModel):
     def authenticable_model(self):
         return self.env[self._authenticable_model]
 
-    def tb_sign_in(self, payload):
-        self = self.sudo()
+    def _authenticate(self, payload):
         pwd_hash = hashlib.sha256(payload.password.encode("utf-8")).hexdigest()
         authenticable = self.authenticable_model.search(
             [
@@ -28,6 +27,10 @@ class AuthenticableBackendBase(models.AbstractModel):
         else:
             raise ValidationError(_("No authenticable found for these credentials"))
 
+    def sign_in(self, payload):
+        self = self.sudo()
+        return self._authenticate(payload)
+
     def _prepare_authenticable_sign_up_vals(self, payload):
         pwd_hash = hashlib.sha256(payload.password.encode("utf-8")).hexdigest()
         return {
@@ -35,7 +38,7 @@ class AuthenticableBackendBase(models.AbstractModel):
             self.authenticable_model._authenticable_login: payload.login,
         }
 
-    def tb_sign_up(self, payload):
+    def sign_up(self, payload):
         self = self.sudo()
         login_field = self.authenticable_model._authenticable_login
         already_exists = self.authenticable_model.search([(login_field, "=", payload.login)])
@@ -46,14 +49,14 @@ class AuthenticableBackendBase(models.AbstractModel):
             self.env[self._authenticable_model].create(vals)
             return True
 
-    def tb_sign_out(self, authenticable):
+    def sign_out(self, authenticable):
         self = self.sudo()
-        return authenticable.t_sign_out()
+        return authenticable.sign_out()
 
-    def tb_reset_password(self, authenticable):
+    def reset_password(self, authenticable):
         self = self.sudo()
-        return authenticable.t_reset_password()
+        return authenticable.reset_password()
 
-    def tb_change_password(self, payload, authenticable):
+    def change_password(self, payload, authenticable):
         self = self.sudo()
-        return authenticable.t_change_password(payload.password)
+        return authenticable.change_password(payload.password)

@@ -11,7 +11,6 @@ def get_jwt_token_from_header():
     token_raw = headers.get("Authorization")
     return token_raw.partition("Bearer ")[2]
 
-
 def translate_claims(token, env):
     require = {"require": ["iss", "sub", "exp"]}
     claims = jwt.decode(token, verify=False, options=require)
@@ -21,12 +20,7 @@ def translate_claims(token, env):
     authenticable = env[authenticable_model].browse(int(authenticable_id))
     return backend, authenticable
 
-
 def jwt_info(token=None):
     token = token or get_jwt_token_from_header()
     env = api.Environment(request.cr, SUPERUSER_ID, request.context)
     return translate_claims(token, env)
-
-
-# def use_jwt(fn):
-#     return functools.partial(fn, jwt_info)

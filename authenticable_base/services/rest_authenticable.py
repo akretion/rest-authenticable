@@ -15,25 +15,25 @@ class RestAuthenticableBase(AbstractComponent):
         return (
             self.env[payload.backend.backend_name]
             .browse(payload.backend.backend_id)
-            .tb_sign_up(payload)
+            .sign_up(payload)
         )
 
     def _sign_in(self, payload):
         return (
             self.env[payload.backend.backend_name]
             .browse(payload.backend.backend_id)
-            .tb_sign_in(payload)
+            .sign_in(payload)
         )
 
     def _sign_out(self, backend, authenticable):
-        return backend.tb_sign_out(authenticable)
+        return backend.sign_out(authenticable)
 
     def _change_password(self, payload, backend, authenticable):
-        return backend.tb_change_password(payload, authenticable)
+        return backend.change_password(payload, authenticable)
 
     def _reset_password(self, payload):
         return (
             self.env[payload.backend.backend_name]
             .browse(payload.backend.backend_id)
-            .tb_reset_password(payload.authenticable_identifier)
+            .reset_password(payload.authenticable_identifier)
         )

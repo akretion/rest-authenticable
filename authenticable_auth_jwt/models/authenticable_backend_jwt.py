@@ -37,5 +37,5 @@ class AuthenticableBackendJwt(models.AbstractModel):
         token = jwt.encode(payload, self.jwt_secret_key)
         return token
 
-    def tb_sign_in(self, payload):
-        return self.jwt_generate(super().tb_sign_in(payload))
+    def sign_in(self, payload):
+        return self.jwt_generate(super().sign_in(payload))

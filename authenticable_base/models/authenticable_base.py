@@ -15,14 +15,14 @@ class AuthenticableBase(models.AbstractModel):
         #  2. You must ensure this is a stored, non-related field
     )
 
-    def t_change_password(self, password):
+    def change_password(self, password):
         pwd_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
         pwd_field = self._authenticable_pwd_hash
         setattr(self, pwd_field, pwd_hash)
         return "Success"
 
-    def t_reset_password(self):
+    def reset_password(self):
         pass
 
-    def t_sign_out(self):
+    def sign_out(self):
         pass
