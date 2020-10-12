@@ -3,10 +3,10 @@
    :alt: License: AGPL-3
 
 ===============
-Auth Tenant Jwt
+Auth Authenticable Jwt
 ===============
 
-Implements JWT authentication and authorization for tenants
+Implements JWT authentication and authorization for authenticables
 
 Installation
 ============

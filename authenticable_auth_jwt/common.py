@@ -16,10 +16,10 @@ def translate_claims(token, env):
     require = {"require": ["iss", "sub", "exp"]}
     claims = jwt.decode(token, verify=False, options=require)
     backend_model, backend_id = claims["iss"].split(",")
-    tenant_model, tenant_id = claims["sub"].split(",")
+    authenticable_model, authenticable_id = claims["sub"].split(",")
     backend = env[backend_model].browse(int(backend_id))
-    tenant = env[tenant_model].browse(int(tenant_id))
-    return backend, tenant
+    authenticable = env[authenticable_model].browse(int(authenticable_id))
+    return backend, authenticable
 
 
 def jwt_info(token=None):

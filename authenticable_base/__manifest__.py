@@ -2,15 +2,14 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
-    "name": "Auth Tenant Jwt",
+    "name": "Base Authenticable",
     "summary": """
-        Implements JWT authentication and authorization for tenants""",
+        Implements the base features for a authenticable model""",
     "version": "12.0.1.0.0",
     "license": "AGPL-3",
     "author": "Akretion,Odoo Community Association (OCA)",
     "website": "https://www.akretion.com",
-    "depends": ["tenant_base"],
+    "depends": ["component", "base_rest"],
     "data": [],
     "demo": [],
-    # "external_dependencies": {"python": ["pyjwt"]},
 }

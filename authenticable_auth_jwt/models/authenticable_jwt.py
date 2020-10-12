@@ -4,9 +4,9 @@
 from odoo import models
 
 
-class TenantJwt(models.AbstractModel):
-    _inherit = "tenant.base"
-    _name = "tenant.jwt"
+class AuthenticableJwt(models.AbstractModel):
+    _inherit = "authenticable.base"
+    _name = "authenticable.jwt"
 
     def t_sign_out(self):
         result = super().t_sign_out()

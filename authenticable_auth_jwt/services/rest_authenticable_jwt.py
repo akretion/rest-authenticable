@@ -3,7 +3,7 @@
 from odoo.addons.component.core import AbstractComponent
 
 
-class RestTenantBase(AbstractComponent):
-    _name = "rest.tenant.jwt"
-    _inherit = "rest.tenant.base"
+class RestAuthenticableBase(AbstractComponent):
+    _name = "rest.authenticable.jwt"
+    _inherit = "rest.authenticable.base"
     _usage = "auth"
