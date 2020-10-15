@@ -1,1 +1,1 @@
-from . import rest_authenticable
+from . import authenticable

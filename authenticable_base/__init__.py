@@ -1,3 +1,3 @@
 from . import models
 from . import services
-from . import datamodel
+from . import datamodels

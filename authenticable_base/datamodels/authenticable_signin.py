@@ -9,10 +9,8 @@ class AuthenticableSigninInput(Datamodel):
 
     login = fields.Str(required=True)
     password = fields.Str(required=True)
-    backend = fields.NestedModel("authenticable.backend", required=True)
+    backend = fields.Str(required=True)
 
 
 class AuthenticableSigninOutput(Datamodel):
     _name = "authenticable.signin.output"
-
-    token = fields.Str(required=True)

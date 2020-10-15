@@ -21,7 +21,7 @@ class IrHttp(models.AbstractModel):
         try:
             backend, x = translate_claims(token)
             backend.jwt_verify_validity(token)
-            request.aid =
+            #request.aid =
         except Exception as e:
             _logger.error("Problem decoding JWT, access denied")
             _logger.error("%s" % str(e))
