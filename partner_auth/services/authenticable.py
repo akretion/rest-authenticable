@@ -9,7 +9,7 @@ class BaseAuthenticable(AbstractComponent):
     _name = "base.authenticable"
     _usage = "auth"
 
-    def _find_backend_from_request(self):
+    def _get_directory(self):
         raise NotImplementedError()
 
     def sign_up(self, payload):
@@ -26,20 +26,21 @@ class BaseAuthenticable(AbstractComponent):
         auth="public",
     )
     def sign_in(self, params):
-        backend = self.env[self._collection].sudo().search([
-            ("tech_name", "=", params.backend)
-            ])
-        if backend._sign_in(login=params.login, password=params.password):
-            return self._successfull_sign_in()
+        directory = self._get_directory()
+        partner_auth = self.env["partner.auth"].sign_in(
+            directory, params.login, params.password)
+        if partner_auth:
+            return self._successfull_sign_in(partner_auth)
         else:
             return self._invalid_sign_in()
 
     def _invalid_sign_in(self):
         raise AccessError("Invalid Login or Password")
 
-    def _successfull_sign_in(self):
+    def _successfull_sign_in(self, partner_auth):
         """Each specific implementation should return the right think here
             like a session or a token"""
+        # TODO define what we should return
         return NotImplementedError
 
     def _sign_out(self, backend, authenticable):

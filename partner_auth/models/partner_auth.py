@@ -1,7 +1,8 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import passlib
-from odoo import models
+import logging
+from odoo import api, fields, models
 from odoo.exceptions import AccessDenied
 
 # please read passlib great documentation
@@ -11,12 +12,35 @@ from odoo.exceptions import AccessDenied
 DEFAULT_CRYPT_CONTEXT = passlib.context.CryptContext(['pbkdf2_sha512'])
 
 
-class AuthenticableBase(models.AbstractModel):
-    _name = "authenticable.mixin"
-    _description = "Authenticable"
+_logger = logging.getLogger(__name__)
 
-    _authenticable_login_field = None
-    _authenticable_password_field = None
+
+class PartnerAuth(models.Model):
+    _name = "partner.auth"
+    _description = "Partner Auth"
+
+    partner_id = fields.Many2one(
+        'res.partner',
+        'Partner')
+    directory_id = fields.Many2one(
+        'directory.auth',
+        'Directory')
+    login = fields.Char(compute="_compute_login", store=True)
+    password = fields.Char(compute="_compute_password", inverse="_set_password")
+    encrypted_password = fields.Char()
+
+    _sql_constraints = [
+        (
+            'directory_login_uniq',
+            'unique (directory_id, login)',
+            'Login must be uniq per directory !'
+        ),
+    ]
+
+    @api.depends("partner_id.email")
+    def _compute_login(self):
+        for record in self:
+            record.login = record.partner_id.email
 
     def _crypt_context(self):
         return DEFAULT_CRYPT_CONTEXT
@@ -30,14 +54,12 @@ class AuthenticableBase(models.AbstractModel):
             _logger.warning("Invalid login/password for sign in")
             raise AccessDenied()
 
-    def _get_hashed_password(self, login, password, backend_id):
-        self.env.cr.execute(
-            "SELECT id, COALESCE({}, '') FROM {} WHERE {}=%s AND backend_id=%s".format(
-                self._authenticable_password_field,
-                self._table,
-                self._authenticable_login_field
-                ),
-            (login, backend_id)
+    def _get_hashed_password(self, directory, login):
+        self.env.cr.execute("""
+            SELECT id, COALESCE(encrypted_password, '')
+            FROM partner_auth
+            WHERE login=%s AND directory_id=%s""",
+            (login, directory.id)
         )
         hashed = self.env.cr.fetchone()
         if hashed:
@@ -45,13 +67,20 @@ class AuthenticableBase(models.AbstractModel):
         else:
             raise AccessDenied()
 
-    def _set_password(self, password):
-        ctx = self._crypt_context()
-        self.encrypted_password = ctx.encrypt(password)
+    def _compute_password(self):
+        for record in self:
+            record.password = ""
 
-    def _sign_in(self, login, password, backend_id):
+    def _set_password(self):
+        # TODO add check on group
+        for record in self:
+            ctx = record._crypt_context()
+            record.encrypted_password = ctx.encrypt(record.password)
+
+    @api.model
+    def sign_in(self, directory, login, password):
         self._check_no_empty(login, password)
-        _id, hashed = self._get_hashed_password(login, password, backend_id)
+        _id, hashed = self._get_hashed_password(directory, login)
         valid, replacement = self._crypt_context().verify_and_update(password, hashed)
 
         if replacement is not None:

@@ -9,7 +9,6 @@ class AuthenticableSigninInput(Datamodel):
 
     login = fields.Str(required=True)
     password = fields.Str(required=True)
-    backend = fields.Str(required=True)
 
 
 class AuthenticableSigninOutput(Datamodel):
