@@ -9,8 +9,8 @@
     "license": "AGPL-3",
     "author": "Akretion,Odoo Community Association (OCA)",
     "website": "https://www.akretion.com",
-    "depends": ["authenticable_base"],
+    "depends": ["partner_auth", "server_environment"],
     "data": [],
     "demo": [],
-    # "external_dependencies": {"python": ["pyjwt"]},
+    "external_dependencies": {"python": ["jwt"]},
 }
