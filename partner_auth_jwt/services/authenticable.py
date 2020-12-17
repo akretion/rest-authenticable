@@ -45,3 +45,8 @@ class BaseAuthenticableJWT(AbstractComponent):
         params = self._prepare_jwt_cookie(partner_auth)
         response.set_cookie("jwt", **params)
         return response
+
+    def _sign_out(self):
+        response = super()._sign_out()
+        response.set_cookie("jwt", max_age=0)
+        return response
