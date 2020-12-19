@@ -2,8 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import jwt
 from odoo.http import request
-from odoo import api
-from odoo.tools import SUPERUSER_ID
+from odoo import api, SUPERUSER_ID
 
 
 def get_jwt_token_from_header():

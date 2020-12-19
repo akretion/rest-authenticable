@@ -5,7 +5,7 @@
     "name": "Auth Authenticable Jwt",
     "summary": """
         Implements JWT authentication and authorization for authenticables""",
-    "version": "12.0.1.0.0",
+    "version": "14.0.1.0.0",
     "license": "AGPL-3",
     "author": "Akretion,Odoo Community Association (OCA)",
     "website": "https://www.akretion.com",
