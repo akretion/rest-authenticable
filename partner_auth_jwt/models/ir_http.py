@@ -21,8 +21,8 @@ class IrHttp(models.AbstractModel):
             _logger.error(_("No or bad JWT, access denied"))
             raise AccessDenied()
         try:
-            require = {"require": ["iss", "sub", "exp"]}
-            claims = jwt.decode(token, verify=False, options=require)
+            options = {"require": ["iss", "sub", "exp"], "verify_signature": False}
+            claims = jwt.decode(token, options=options)
             directory = env["directory.auth"].browse(int(claims["iss"]))
             if not directory.jwt_secret_key:
                 raise ValidationError(_("No secret key defined"))
