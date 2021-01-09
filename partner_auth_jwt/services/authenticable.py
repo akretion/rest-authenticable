@@ -40,10 +40,13 @@ class BaseAuthenticableJWT(AbstractComponent):
             vals["secure"] = False
         return vals
 
-    def _successfull_sign_in(self, partner_auth):
-        response = super()._successfull_sign_in(partner_auth)
+    def _set_jwt_cookie(self, partner_auth, response):
         params = self._prepare_jwt_cookie(partner_auth)
         response.set_cookie("jwt", **params)
+
+    def _successfull_sign_in(self, partner_auth):
+        response = super()._successfull_sign_in(partner_auth)
+        self._set_jwt_cookie(partner_auth, response)
         return response
 
     def _sign_out(self):
