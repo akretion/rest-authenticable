@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menuitem_root_rest_authenticables" name="REST Authenticables" parent="base.menu_custom" sequence="22"
+              groups="base.group_no_one"/>
+
+    <record model="ir.ui.view" id="view_auth_directory_tree">
+        <field name="model">directory.auth</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_auth_directory_form">
+        <field name="model">directory.auth</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <group name="params_token" string="Token parameters">
+                        <field name="reset_password_token_duration"/>
+                        <field name="forget_password_template_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_authenticable_directories" model="ir.actions.act_window">
+        <field name="name">Directories</field>
+        <field name="res_model">directory.auth</field>
+        <field name="view_id" ref="view_auth_directory_tree"/>
+    </record>
+    <menuitem action="action_authenticable_directories" id="menuitem_authenticable_directories"
+              parent="partner_auth.menuitem_root_rest_authenticables"
+              groups="base.group_no_one"/>
+
+    <record model="ir.ui.view" id="view_auth_partner_tree">
+        <field name="model">partner.auth</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="login"/>
+                <field name="directory_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_auth_partner_form">
+        <field name="model">partner.auth</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group name="general" string="General">
+                        <field name="partner_id"/>
+                        <field name="login"/>
+                        <field name="directory_id"/>
+                    </group>
+                    <group name="misc" string="Miscellanous">
+                        <field name="password"/>
+                        <field name="encrypted_password"/>
+                        <field name="reset_token"/>
+                        <field name="token_expiration"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_authenticable_partners" model="ir.actions.act_window">
+        <field name="name">Partners</field>
+        <field name="res_model">partner.auth</field>
+        <field name="view_id" ref="view_auth_partner_tree"/>
+    </record>
+    <menuitem action="action_authenticable_partners" id="menuitem_authenticable_partners"
+              parent="partner_auth.menuitem_root_rest_authenticables"
+              groups="base.group_no_one"/>
+
+</odoo>
