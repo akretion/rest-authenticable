@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_auth_directory_form">
+        <field name="model">directory.auth</field>
+        <field name="inherit_id" ref="partner_auth.view_auth_directory_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='params_token']" position="after">
+                <group name="password_policy" string="Password policies">
+                    <field name="policy_password_complexity_lower"/>
+                    <field name="policy_password_complexity_upper"/>
+                    <field name="policy_password_complexity_numeric"/>
+                    <field name="policy_password_complexity_special"/>
+                    <field name="policy_password_complexity_length"/>
+                    <field name="policy_password_complexity_estimate"/>
+                    <field name="policy_password_rotation"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_auth_partner_form">
+        <field name="model">partner.auth</field>
+        <field name="inherit_id" ref="partner_auth.view_auth_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='misc']" position="inside">
+                <field name="past_hashes"/>
+                <field name="date_password_updated"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
