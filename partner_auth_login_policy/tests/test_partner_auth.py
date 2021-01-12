@@ -22,18 +22,22 @@ class TestPartnerAuthLoginPolicy(SavepointCase):
         self.partner = self.env.ref("partner_auth.demo_readymat_auth")
         self.partner.password = "covfefe"
         self.directory.policy_login_attempts = 7
-        # self.env.cr.commit = Mock()
+        self.env.cr.commit = Mock()
 
     def tearDown(self):
         self.registry.leave_test_mode()
         super().tearDown()
 
     def test_too_many_logins(self):
-        for x in range(8):
-            with self.assertRaises(AccessDenied):
-                self.env["partner.auth"].sign_in(
-                    self.directory, "ready.mat28@example.com", "wrong_pwd"
+        for x in range(9):
+            with api.Environment.manage():
+                env = api.Environment(
+                    self.registry.test_cr, self.env.uid, self.env.context
                 )
+                with self.assertRaises(AccessDenied):
+                    env["partner.auth"].sign_in(
+                        self.directory, "ready.mat28@example.com", "wrong_pwd"
+                    )
         with self.assertRaises(TooManyLoginsExc):
             self.env["partner.auth"].sign_in(
                 self.directory, "ready.mat28@example.com", "wrong_pwd"
