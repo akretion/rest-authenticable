@@ -20,29 +20,16 @@ class PartnerAuth(models.Model):
     )
 
     def _increment_login_attempt(self, partner):
-        with api.Environment.manage():
-            with registry(self.env.cr.dbname).cursor() as new_cr:
-                new_env = api.Environment(new_cr, self.env.uid, self.env.context)
-                new_env.cr.execute(
-                    """
-                    UPDATE partner_auth 
-                    SET login_attempts = login_attempts + 1
-                    WHERE id = %s 
-                    """
-                    % partner.id
-                )
-                new_env.cr.commit()
-        self.env["partner.auth"].clear_caches()
-        self.env["partner.auth"].invalidate_cache()
+        partner.login_attempts += 1
+        self.env.cr.commit()
 
     def _check_too_many_login_attempts(self, directory, login):
         partner = self.env["partner.auth"].search(
             [("login", "=", login), ("directory_id", "=", directory.id)]
         )
-
+        self._increment_login_attempt(partner)
         if partner.blocked_too_many_logins:
             raise AccountBlockedExc()
-        self._increment_login_attempt(partner)
         max_login_attempts = directory.policy_login_attempts
         if max_login_attempts and partner.login_attempts > max_login_attempts:
             partner.blocked_too_many_logins = True
