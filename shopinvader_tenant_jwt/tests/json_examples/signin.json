@@ -1,8 +1,0 @@
-{
-  "login": "anubis@shopinvader.com",
-  "password": "PwdPartner2",
-  "backend": {
-    "backend_id": 1,
-    "backend_name": "shopinvader.backend"
-  }
-}

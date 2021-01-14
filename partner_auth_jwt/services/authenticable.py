@@ -1,9 +1,13 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import tools
-from odoo.addons.component.core import AbstractComponent
 from datetime import datetime, timedelta
+
 import jwt
+
+from odoo import _, tools
+from odoo.exceptions import ValidationError
+
+from odoo.addons.component.core import AbstractComponent
 
 
 class BaseAuthenticableJWT(AbstractComponent):
@@ -34,7 +38,7 @@ class BaseAuthenticableJWT(AbstractComponent):
             "httponly": True,
             "secure": True,
             "samesite": "strict",
-            }
+        }
         if tools.config.get("test_enable"):
             # do not force https for test
             vals["secure"] = False
