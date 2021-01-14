@@ -1,6 +1,7 @@
 # Copyright 2020 Akretion
 # Copyright 2020 Odoo SA (some code have been inspired from res_users code)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+import re
 
 import zxcvbn
 
@@ -8,7 +9,6 @@ from odoo import _, fields, models
 from odoo.exceptions import ValidationError
 
 zxcvbn.feedback._ = _
-import re
 
 
 class DirectoryAuth(models.Model):
@@ -86,11 +86,11 @@ class DirectoryAuth(models.Model):
                 "Password does not pass complexity test:\r"
                 + self._build_error_message()
             )
-            raise ValidationError(message)
+            raise ValidationError(_("%s" % message))
 
         estimation = zxcvbn.zxcvbn(password)
         if estimation["score"] < self.policy_password_complexity_estimate:
-            raise ValidationError("Password does not pass complexity score")
+            raise ValidationError(_("Password does not pass complexity score"))
 
         return True
 
@@ -100,4 +100,4 @@ class DirectoryAuth(models.Model):
             and (fields.Date.today() - date_last_changed).days
             > self.policy_password_expiration
         ):
-            raise ValidationError("Password is expired, please reset it.")
+            raise ValidationError(_("Password is expired, please reset it"))

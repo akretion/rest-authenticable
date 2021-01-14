@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
     <record model="ir.ui.view" id="view_auth_directory_form">
         <field name="model">directory.auth</field>
-        <field name="inherit_id" ref="partner_auth.view_auth_directory_form"/>
+        <field name="inherit_id" ref="partner_auth.view_auth_directory_form" />
         <field name="arch" type="xml">
             <xpath expr="//group[@name='params_token']" position="after">
                 <group name="login_policy" string="Login Policy">
-                    <field name="policy_login_attempts"/>
+                    <field name="policy_login_attempts" />
                 </group>
             </xpath>
         </field>

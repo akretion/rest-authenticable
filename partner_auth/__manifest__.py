@@ -13,7 +13,7 @@
     "data": [
         "security/res_group.xml",
         "security/ir.model.access.csv",
-        "views/views.xml"
+        "views/views.xml",
     ],
     "demo": ["demo/demo.xml"],
 }
