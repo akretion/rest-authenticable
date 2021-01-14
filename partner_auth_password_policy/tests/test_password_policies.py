@@ -1,11 +1,11 @@
 # Copyright 2020 Akretion France (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api
-from odoo.tests.common import SavepointCase
-from odoo.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
+
 from odoo import fields
+from odoo.exceptions import ValidationError
+from odoo.tests.common import SavepointCase
 
 
 class TestPasswordPolicies(SavepointCase):

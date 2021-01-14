@@ -5,8 +5,8 @@
             <field name="name">My Great External Service</field>
         </record>
         <record id="demo_readymat_auth" model="partner.auth">
-            <field name="partner_id" ref="base.res_partner_4"/>
-            <field name="directory_id" ref="partner_auth.demo_directory"/>
+            <field name="partner_id" ref="base.res_partner_4" />
+            <field name="directory_id" ref="partner_auth.demo_directory" />
         </record>
     </data>
 </odoo>

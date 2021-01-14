@@ -1,8 +1,8 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
-from odoo import api, fields, models
 
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class PartnerAuth(models.Model):
         for past_hash in self.past_hashes:
             if self._crypt_context().verify(password, past_hash):
                 raise ValidationError(
-                    "You may not use a password that you have used before."
+                    _("You may not use a password that you have used before.")
                 )
 
     def _prepare_encrypted_password(self, password):
