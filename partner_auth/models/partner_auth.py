@@ -15,6 +15,9 @@ from odoo.addons.auth_signup.models.res_partner import random_token
 # https://passlib.readthedocs.io/en/stable/narr/quickstart.html#choosing-a-hash
 # be carefull odoo requirements use an old version of passlib
 DEFAULT_CRYPT_CONTEXT = passlib.context.CryptContext(["pbkdf2_sha512"])
+DEFAULT_CRYPT_CONTEXT_TOKEN = passlib.context.CryptContext(
+    ["pbkdf2_sha512"], pbkdf2_sha512__salt_size=0
+)
 
 
 _logger = logging.getLogger(__name__)
@@ -29,7 +32,7 @@ class PartnerAuth(models.Model):
     login = fields.Char(compute="_compute_login", store=True, required=True)
     password = fields.Char(compute="_compute_password", inverse="_inverse_password")
     encrypted_password = fields.Char()
-    reset_token = fields.Char()
+    token_set_password_encrypted = fields.Char()
     token_expiration = fields.Datetime()
 
     _sql_constraints = [
@@ -105,36 +108,48 @@ class PartnerAuth(models.Model):
             raise AccessDenied()
         return self.browse(_id)
 
-    def _get_template(self, directory):
+    def _get_template_forgot_password(self, directory):
         return directory.forget_password_template_id
 
-    def _generate_token(self, directory):
+    def _get_template_invite_set_password(self, directory):
+        return directory.invite_set_password_template_id
+
+    def _generate_token(self):
+        token = random_token()
         self.write(
             {
-                "reset_token": random_token(),
+                "token_set_password_encrypted": self._encrypt_token(token),
                 "token_expiration": datetime.now()
-                + timedelta(minutes=directory.reset_password_token_duration),
+                + timedelta(minutes=self.directory_id.set_password_token_duration),
             }
         )
+        return token
 
-    def reset_password(self, directory, reset_token, password):
-        auth = self.search(
-            [("reset_token", "=", reset_token), ("directory_id", "=", directory.id)],
-            limit=1,
+    def _encrypt_token(self, token):
+        return DEFAULT_CRYPT_CONTEXT_TOKEN.hash(token)
+
+    def set_password(self, directory, token_set_password, password):
+        hashed_token = self._encrypt_token(token_set_password)
+        partner_auth = self.env["partner.auth"].search(
+            [
+                ("token_set_password_encrypted", "=", hashed_token),
+                ("directory_id", "=", directory.id),
+            ]
         )
-        if auth and auth.token_expiration > datetime.now():
-            auth.write(
+        if partner_auth and partner_auth.token_expiration > datetime.now():
+            partner_auth.write(
                 {
                     "password": password,
-                    "reset_token": False,
+                    "token_set_password_encrypted": False,
                     "token_expiration": False,
                 }
             )
-            return auth
+            return partner_auth
         else:
-            raise UserError(_("The link is not valid, please request a new one"))
+            raise UserError(_("The token is not valid, please request a new one"))
 
     def forgot_password(self, directory, login):
+        # forgot_password is called from a job so we return the result as a string
         auth = self.search(
             [
                 ("directory_id", "=", directory.id),
@@ -142,13 +157,30 @@ class PartnerAuth(models.Model):
             ]
         )
         if auth:
-            auth._generate_token(directory)
-            template = self._get_template(directory)
+            template = self._get_template_forgot_password(directory)
             if not template:
                 raise UserError(
-                    _("Template is missing for directory {}").format(directory.name)
+                    _("Forgotten Password template is missing for directory {}").format(
+                        directory.name
+                    )
                 )
-            template.sudo().send_mail(auth.id)
+            token = auth._generate_token()
+            template.sudo().with_context(token=token).send_mail(auth.id)
             return "Partner Auth reset password token sent"
         else:
             return "No Partner Auth found, skip"
+
+    def send_invite(self):
+        """Use to send an invitation to the user to set
+        his password for the first time"""
+        self.ensure_one()
+        template = self._get_template_invite_set_password(self.directory_id)
+        if not template:
+            raise UserError(
+                _(
+                    "Invitation to Set Password template is missing for directory {}"
+                ).format(self.directory_id.name)
+            )
+        token = self._generate_token()
+        template.with_context(token=token).send_mail(self.id)
+        return True
