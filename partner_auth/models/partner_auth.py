@@ -6,9 +6,11 @@ from datetime import datetime, timedelta
 import passlib
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessDenied, UserError
+from odoo.exceptions import UserError
 
 from odoo.addons.auth_signup.models.res_partner import random_token
+
+from ..exceptions import InvalidLoginExc
 
 # please read passlib great documentation
 # https://passlib.readthedocs.io
@@ -27,6 +29,7 @@ class PartnerAuth(models.Model):
     _name = "partner.auth"
     _description = "Partner Auth"
 
+    name = fields.Char(compute="_compute_name")
     partner_id = fields.Many2one("res.partner", "Partner", required=True)
     directory_id = fields.Many2one("directory.auth", "Directory", required=True)
     login = fields.Char(compute="_compute_login", store=True, required=True)
@@ -54,6 +57,10 @@ class PartnerAuth(models.Model):
             self._add_login_for_create(data)
         return super().create(data_list)
 
+    def _compute_name(self):
+        for rec in self:
+            rec.name = rec.partner_id.name + " - " + rec.directory_id.name
+
     @api.depends("partner_id.email")
     def _compute_login(self):
         for record in self:
@@ -69,7 +76,7 @@ class PartnerAuth(models.Model):
             isinstance(password, str) and password and isinstance(login, str) and login
         ):
             _logger.warning("Invalid login/password for sign in")
-            raise AccessDenied()
+            raise InvalidLoginExc()
 
     def _get_hashed_password(self, directory, login):
         self.env.cr.execute(
@@ -83,7 +90,11 @@ class PartnerAuth(models.Model):
         if hashed:
             return hashed
         else:
-            raise AccessDenied()
+            partner_exists = self.env["partner.auth"].search([("login", "=", login)])
+            if partner_exists:
+                raise InvalidLoginExc(partner=partner_exists)
+            else:
+                raise InvalidLoginExc()
 
     def _compute_password(self):
         for record in self:
@@ -92,8 +103,18 @@ class PartnerAuth(models.Model):
     def _inverse_password(self):
         # TODO add check on group
         for record in self:
-            ctx = record._crypt_context()
-            record.encrypted_password = ctx.encrypt(record.password)
+            record.write(
+                {
+                    "encrypted_password": record._prepare_encrypted_password(
+                        record.password
+                    )
+                }
+            )
+        self.flush()
+
+    def _prepare_encrypted_password(self, password):
+        ctx = self._crypt_context()
+        return ctx.encrypt(password)
 
     @api.model
     def sign_in(self, directory, login, password):
@@ -105,7 +126,7 @@ class PartnerAuth(models.Model):
             self.browse(_id).encrypted_password = replacement
 
         if not valid:
-            raise AccessDenied()
+            raise InvalidLoginExc()
         return self.browse(_id)
 
     def _get_template_forgot_password(self, directory):
