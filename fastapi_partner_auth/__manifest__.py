@@ -13,9 +13,8 @@
         "extendable_fastapi",
         "mail",
         "base_future_response",
-        "sale",
         "queue_job",
-    ],  # sale is needed ?
+    ],
     "data": [
         "security/res_group.xml",
         "security/ir.model.access.csv",
@@ -23,9 +22,9 @@
         "views/fastapi_endpoint_view.xml",
     ],
     "demo": [
-        "demo/directory_auth_demo.xml",
+        "demo/fastapi_auth_directory_demo.xml",
         "demo/res_partner_demo.xml",
-        "demo/partner_auth_demo.xml",
+        "demo/fastapi_auth_partner_demo.xml",
         "demo/fastapi_endpoint_demo.xml",
     ],
     "external_dependencies": {
