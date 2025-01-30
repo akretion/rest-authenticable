@@ -15,7 +15,12 @@ This repo contains modules to allow for authentication via a REST API
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[partner_auth](partner_auth/) | 14.0.1.0.0 |  | Implements the base features for a authenticable partner
+[partner_auth_jwt](partner_auth_jwt/) | 14.0.1.0.0 |  | Implements JWT authentication and authorization for authenticables
 
 [//]: # (end addons)
 
