@@ -1,11 +1,11 @@
 # Copyright 2020 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import _
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessDenied
 from odoo.http import request
 
 from odoo.addons.base_rest import restapi
 from odoo.addons.base_rest_datamodel.restapi import Datamodel
+from odoo.addons.base_rest.http import wrapJsonException
 from odoo.addons.component.core import AbstractComponent
 
 
@@ -36,13 +36,10 @@ class BaseAuthenticable(AbstractComponent):
             .sudo()
             .sign_in(directory, params.login, params.password)
         )
-        if partner_auth:
-            return self._successfull_sign_in(partner_auth)
-        else:
-            return self._invalid_sign_in()
+        return self._successfull_sign_in(partner_auth)
 
-    def _invalid_sign_in(self):
-        raise AccessError(_("Invalid Login or Password"))
+    def _invalid_sign_in(self, message):
+        return wrapJsonException(AccessDenied(message))
 
     def _successfull_sign_in(self, partner_auth):
         data = self._prepare_sign_in_data(partner_auth)
